@@ -1,6 +1,5 @@
 {
   "homepage": "https://raid-calculator.github.io",
-  "deploy": "gh-pages -d build",
   "name": "krening",
   "private": true,
   "version": "0.0.0",
@@ -9,7 +8,8 @@
     "dev": "vite",
     "build": "vite build",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "deploy": "gh-pages -d build"
   },
   "dependencies": {
     "@tailwindcss/vite": "^4.0.14",
