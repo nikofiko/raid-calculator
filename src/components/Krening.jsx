@@ -109,7 +109,7 @@ const Krening = () => {
             <div className="flex flex-col lg:flex-row justify-between gap-2">
                 <input className="text-gray-700 lg:max-w-38 max-h-[34px] outline-none border-1 border-gray-200 pl-3 rounded-xl py-1 lg:py-0" value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Name " />
                 <input className="text-gray-700 lg:max-w-40 outline-none border-1 border-gray-200 pl-3 py-1 rounded-xl" onChange={e => setTime(e.target.value)} type="text" placeholder="13:00:00" />
-                <input onKeyDown={handleKeyDownEnter} className="text-gray-700 max-h-[34px] lg:max-w-20 outline-none border-1 py-1 lg:py-0 border-gray-200 pl-3 rounded-xl" value={czas} onChange={e => setCzas(e.target.value)} type="text" placeholder="+s"/>
+                <input onKeyDown={handleKeyDownEnter} className="text-gray-700 max-h-[34px] lg:max-w-20 outline-none border-1 py-1 lg:py-0 border-gray-200 pl-3 rounded-xl" value={czas} onChange={e => setCzas(e.target.value)} type="number" placeholder="+s"/>
                 <button className="cursor-pointer flex items-center justify-center lg:justify-normal text-gray-700 max-h-[34px] pt-2 pb-2 px-5 rounded-xl bg-gray-100 text-[13px] font-semibold hover:opacity-80 transition-all duration-300" onClick={handleKeyDown}>ADD</button>
             </div>
         </div>
@@ -127,7 +127,7 @@ const Krening = () => {
                                 {guy.name}  
                             </span>
                             <span className={`${guy.color} !bg-transparent font-semibold text-[12px] relative -top-1.5`}>
-                                +{guy.czas}
+                                +{guy.czas}s
                             </span>
                         </span>
                    
