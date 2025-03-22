@@ -4,7 +4,7 @@ import _ from 'lodash';
 const Krening = () => {
     const [name, setName] = useState('');
     const [time, setTime] = useState('');
-    const [initialTime, setInitialTime] = useState(null); // Nowy stan dla początkowego czasu
+    const [initialTime, setInitialTime] = useState('00:00:00'); // Domyślny początkowy czas
     const [czas, setCzas] = useState('');
     const [guy, setGuy] = useState(() => {
         const savedGuys = localStorage.getItem('raidGuys');
@@ -29,19 +29,18 @@ const Krening = () => {
             setError(true);
             return;
         }
-        if (!numberRegex.test(czas) || (!time.trim() && !timeRegex.test(time) && !fullDateRegex.test(time) && guy.length === 0)) {
+        if (!numberRegex.test(czas)) {
             setError(true);
             return;
         }
 
         setGuy(prevGuy => {
-            let baseTime;
+            // Ustawiamy baseTime na podstawie inputu time lub domyślnego '00:00:00'
+            const baseTime = time.trim() && timeRegex.test(time) ? time : initialTime;
             if (prevGuy.length === 0) {
-                baseTime = time.trim() ? time : "00:00:00"; // Ustawiamy domyślny czas, jeśli pole jest puste
                 setInitialTime(baseTime); // Zapisz początkowy czas przy pierwszym elemencie
-            } else {
-                baseTime = prevGuy[prevGuy.length - 1].time; // Użyj czasu ostatniego elementu
             }
+
             const date = new Date(`December 17, 1995 ${baseTime}`);
             date.setSeconds(date.getSeconds() + parseInt(czas));
 
@@ -56,9 +55,7 @@ const Krening = () => {
                 time: formatTime(date)
             };
 
-            const updatedGuys = [...prevGuy, newGuy];
-            setTime(formatTime(date)); // Aktualizuj pole time
-            return updatedGuys;
+            return [...prevGuy, newGuy];
         });
 
         setName('');
@@ -66,19 +63,10 @@ const Krening = () => {
         setError(false);
     };
 
-    const handleKeyDown = () => {
-        handleAdd();
-    };
-
     const handleDelete = (indexToDelete) => {
-        if (indexToDelete !== guy.length) {
-            return; // Usuwamy tylko ostatni element
-        }
         setGuy(prevGuy => {
             const filteredGuys = prevGuy.filter(g => g.index !== indexToDelete);
-            if (filteredGuys.length === 0) {
-                setTime(initialTime || ''); // Resetuj czas do początkowego, jeśli lista jest pusta
-            }
+            // Przenumerowanie indeksów
             return filteredGuys.map((g, i) => ({
                 ...g,
                 index: i + 1
@@ -106,7 +94,7 @@ const Krening = () => {
                         <input className="text-gray-700 lg:max-w-38 max-h-[34px] outline-none border-1 border-gray-200 pl-3 rounded-xl py-1 lg:py-0" value={name} onChange={e => setName(e.target.value)} type="text" placeholder="Name " />
                         <input className="text-gray-700 lg:max-w-40 outline-none border-1 border-gray-200 pl-3 py-1 rounded-xl" value={time} onChange={e => setTime(e.target.value)} type="text" placeholder="13:00:00" />
                         <input onKeyDown={handleKeyDownEnter} className="text-gray-700 max-h-[34px] lg:max-w-20 outline-none border-1 py-1 lg:py-0 border-gray-200 pl-3 rounded-xl" value={czas} onChange={e => setCzas(e.target.value)} type="number" placeholder="+s"/>
-                        <button className="cursor-pointer flex items-center justify-center lg:justify-normal text-gray-700 max-h-[34px] pt-2 pb-2 px-5 rounded-xl bg-gray-100 text-[13px] font-semibold hover:opacity-80 transition-all duration-300" onClick={handleKeyDown}>ADD</button>
+                        <button className="cursor-pointer flex items-center justify-center lg:justify-normal text-gray-700 max-h-[34px] pt-2 pb-2 px-5 rounded-xl bg-gray-100 text-[13px] font-semibold hover:opacity-80 transition-all duration-300" onClick={handleAdd}>ADD</button>
                     </div>
                 </div>
             </div>
@@ -133,11 +121,9 @@ const Krening = () => {
                             </span>
                         </div>
                         <div className="flex items-center gap-2">
-                            {g.index === guy.length && (
-                                <div className="hover:bg-red-100 transition-all duration-300 text-red-500 px-2 py-1 rounded-xl cursor-pointer font-semibold">
-                                    <button onClick={() => handleDelete(g.index)} className="cursor-pointer">delete</button>
-                                </div>
-                            )}
+                            <div className="hover:bg-red-100 transition-all duration-300 text-red-500 px-2 py-1 rounded-xl cursor-pointer font-semibold">
+                                <button onClick={() => handleDelete(g.index)} className="cursor-pointer">delete</button>
+                            </div>
                             <div className={`${g.color} font-semibold rounded-xl flex justify-center items-center w-[77px] h-[28px]`}>
                                 {g.time}
                             </div>
